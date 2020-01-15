@@ -14,7 +14,7 @@ class Usuario {
 		this.email = map["email"];
 		this.urlFoto = map["urlFoto"];
 		this.token = map["token"];
-		this.roles = List.castFrom(map["roles"]);
+		this.roles = map["roles"]!= null ? List.castFrom(map["roles"]) : null;
 	}
 
 	@override

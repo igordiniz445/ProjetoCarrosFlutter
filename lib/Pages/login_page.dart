@@ -1,17 +1,29 @@
 import 'package:carros/Apis/login_api.dart';
+import 'package:carros/Apis/login_response.dart';
 import 'package:carros/Entity/Usuario.dart';
 import 'package:carros/Pages/home_page.dart';
 import 'package:carros/Utils/Navegation.dart';
+import 'package:carros/widgets/AlertDialog.dart';
 import 'package:carros/widgets/Blue_button.dart';
 import 'package:carros/widgets/Flat_button.dart';
 import 'package:carros/widgets/Text_field.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   BuildContext _context;
+
   final _userText = TextEditingController();
+
   final _passwordText = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+
+  bool _showProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +38,8 @@ class LoginPage extends StatelessWidget {
   }
 
   _body() {
+    _userText.text = "user";
+    _passwordText.text = "123";
     return Builder(builder: (context) {
       this._context = context;
       return Container(
@@ -40,7 +54,7 @@ class LoginPage extends StatelessWidget {
                   _header(),
                   _loginForm(),
                   _passwordForm(),
-                  _loginButton(),
+                  _showProgress ? _load() : _loginButton(),
                   _signUpButton(),
                 ],
               ),
@@ -52,15 +66,23 @@ class LoginPage extends StatelessWidget {
   }
 
   _logUser() async {
-    _userText.text = "user";
-    _passwordText.text = "123";
-    //if(_formKey.currentState.validate()){}
-    Usuario user = await LoginApi.logar(_userText.text, _passwordText.text);
-    if (user != null) {
-      print(user);
-      push(_context, HomePage());
-    }else{
-
+    if (_formKey.currentState.validate()) {
+      setState(() {
+        _showProgress = true;
+      });
+      LoginResponse response =
+          await LoginApi.logar(_userText.text, _passwordText.text);
+      if (response.ok) {
+        setState(() {
+          _showProgress = false;
+        });
+        push(_context, HomePage());
+      } else {
+        setState(() {
+          _showProgress = false;
+        });
+        showAlert(_context, "Erro ao efetuar login", response.message);
+      }
     }
   }
 
@@ -103,6 +125,19 @@ class LoginPage extends StatelessWidget {
     return Container(
       //margin: EdgeInsets.only(top: 5),
       child: FlatSimpleButton("Create account", () => _signUp()),
+    );
+  }
+
+  _load() {
+    return Stack(
+      children: <Widget>[
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(top: 35),
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ],
     );
   }
 
