@@ -1,9 +1,11 @@
 import 'package:carros/Apis/carros_api.dart';
+import 'package:carros/Blocs/carro_bloc.dart';
 import 'package:carros/Entity/Carro.dart';
+import 'package:carros/Pages/carros_page.dart';
+import 'package:carros/Utils/Navegation.dart';
 import 'package:flutter/material.dart';
 
 class CarrosListView extends StatefulWidget {
-
   String tipoCarro;
   CarrosListView(this.tipoCarro);
 
@@ -11,32 +13,40 @@ class CarrosListView extends StatefulWidget {
   _CarrosListViewState createState() => _CarrosListViewState();
 }
 
-class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAliveClientMixin{
+class _CarrosListViewState extends State<CarrosListView>
+    with AutomaticKeepAliveClientMixin {
+
+  List<Carro> carros;
+  CarroBloc _bloc = CarroBloc();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bloc.fetch(this.widget.tipoCarro);
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _body();
-  }
 
-  _body() {
-    Future<List<Carro>> future = CarrosApi.getCarros(this.widget.tipoCarro);
-    return FutureBuilder(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text("Não foi Possivel recuperar os carros"),
-            );
-          }
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          List<Carro> carros = snapshot.data;
-          return _listView(carros);
-        });
-  }
+    return StreamBuilder(
+      stream: _bloc.stream,
+      builder: (context,snapshot){
+        if(snapshot.hasError){
+          return Text("Não foi possível recuperar lista de carros");
+        }if(!snapshot.hasData){
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        List<Carro> carros = snapshot.data;
+        return _listView(carros);
+      },
+    );
+
+
+    }
 
   _listView(carros) {
     return Container(
@@ -69,7 +79,7 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                           FlatButton(
                             child: const Text('DETALHES'),
                             onPressed: () {
-                              /* ... */
+                              push(context, CarroPage(carro));
                             },
                           ),
                           FlatButton(

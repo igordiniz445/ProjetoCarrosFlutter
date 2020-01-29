@@ -18,11 +18,11 @@ class LoginApi{
 
 			var url = 'https://carros-springboot.herokuapp.com/api/v2/login';
 			var response = await http.post(url, body: jParamentes, headers: header);
-			print('Response status: ${response.statusCode}');
-			//print('Response body: ${response.body}');
+
 			Map mapResponse = json.decode(response.body);
 			if(response.statusCode == 200){
 				Usuario user = Usuario(mapResponse);
+				user.save();
 				return LoginResponse.ok(user);
 			}else{
 				return LoginResponse.error(mapResponse["error"]);
