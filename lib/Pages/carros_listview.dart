@@ -41,7 +41,10 @@ class _CarrosListViewState extends State<CarrosListView>
           );
         }
         List<Carro> carros = snapshot.data;
-        return _listView(carros);
+        return RefreshIndicator(
+          onRefresh: _refresh,
+          child: _listView(carros),
+        );
       },
     );
 
@@ -63,9 +66,12 @@ class _CarrosListViewState extends State<CarrosListView>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Center(
-                      child: Image.network(
-                        carro.urlFoto,
-                        width: 250,
+                      child: Hero(
+                        tag: carro.nome,
+                        child: Image.network(
+                          carro.urlFoto,
+                          width: 250,
+                        ),
                       ),
                     ),
                     Text(
@@ -98,8 +104,13 @@ class _CarrosListViewState extends State<CarrosListView>
           }),
     );
   }
+  Future<void> _refresh() {
+    return _bloc.fetch(this.widget.tipoCarro);
+  }
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
+
 }

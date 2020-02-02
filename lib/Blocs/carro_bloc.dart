@@ -4,10 +4,11 @@ import 'package:carros/Entity/Carro.dart';
 
 class CarroBloc extends SimpleBloc<List<Carro>>{
 
-	fetch(String tipo) async{
+	Future<List<Carro>>fetch(String tipo) async{
 		try{
 			List<Carro> carros = await CarrosApi.getCarros(tipo);
 			add(carros);
+			return carros;
 		}catch(error){
 			addError(error);
 		}
