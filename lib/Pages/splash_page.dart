@@ -1,3 +1,6 @@
+import 'package:carros/DataBase/db-helper.dart';
+import 'package:carros/Pages/login_page.dart';
+import 'package:carros/Utils/Navegation.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -11,7 +14,12 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
+    Future futureA = DatabaseHelper.getInstance().db;
+    Future futureB = Future.delayed(Duration(seconds: 3));
+
+    Future.wait([futureA, futureB]).then((value){
+      push(context, LoginPage());
+    });
   }
 
   @override

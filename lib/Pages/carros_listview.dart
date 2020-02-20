@@ -4,6 +4,8 @@ import 'package:carros/Entity/Carro.dart';
 import 'package:carros/Pages/carros_page.dart';
 import 'package:carros/Utils/Navegation.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class CarrosListView extends StatefulWidget {
   String tipoCarro;
@@ -68,8 +70,9 @@ class _CarrosListViewState extends State<CarrosListView>
                     Center(
                       child: Hero(
                         tag: carro.nome,
-                        child: Image.network(
-                          carro.urlFoto,
+                        child: CachedNetworkImage(
+                          imageUrl: carro.urlFoto,
+                          placeholder: (context, url) => CircularProgressIndicator(),
                           width: 250,
                         ),
                       ),
