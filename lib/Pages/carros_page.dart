@@ -1,5 +1,6 @@
 import 'package:carros/Apis/loripsumApi.dart';
 import 'package:carros/Entity/Carro.dart';
+import 'package:carros/Services/favorito_service.dart';
 import 'package:flutter/material.dart';
 
 class CarroPage extends StatefulWidget {
@@ -151,7 +152,7 @@ class _CarroPageState extends State<CarroPage> {
                 color: Colors.red,
                 size: 32,
               ),
-              onPressed: _likeCar(),
+              onPressed: _likeCar,
             ),
             IconButton(
               icon: Icon(
@@ -159,7 +160,7 @@ class _CarroPageState extends State<CarroPage> {
                 color: Colors.blue,
                 size: 32,
               ),
-              onPressed: _shareCar(),
+              onPressed: _shareCar,
             ),
           ],
         ),
@@ -167,7 +168,9 @@ class _CarroPageState extends State<CarroPage> {
     );
   }
 
-  _likeCar() {}
+  void _likeCar() async{
+    FavoritoService.favoritar(widget.carro);
+  }
 
   _shareCar() {}
 

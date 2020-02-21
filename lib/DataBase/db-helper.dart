@@ -32,9 +32,9 @@ class DatabaseHelper {
   }
 
   void _onCreate(Database db, int newVersion) async {
+    await db.execute('CREATE TABLE favoritos(id INTEGER PRIMARY KEY, nome TEXT);');
     await db.execute(
         'CREATE TABLE carro(id INTEGER PRIMARY KEY, tipo TEXT, nome TEXT, descricao TEXT, urlFoto TEXT, urlVideo TEXT, latitude TEXT, longitude TEXT);'
-        "CREATE TABLE favoritos(id INTEGER PRIMARY KEY, nome TEXT);"
     );
   }
 
