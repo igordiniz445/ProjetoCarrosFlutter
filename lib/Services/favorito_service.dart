@@ -14,4 +14,9 @@ class FavoritoService{
 		}
 		dao.save(f);
 	}
+
+	static List<Carro> getCarros(){
+		List<Carro> carros = [];
+		return carros;
+	}
 }
