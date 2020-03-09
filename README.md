@@ -1,6 +1,7 @@
 # carros
 
-A new Flutter application.
+A new Flutter application simulating an app that shows info about many cars.
+Project used to study flutter.
 
 ## Getting Started
 
