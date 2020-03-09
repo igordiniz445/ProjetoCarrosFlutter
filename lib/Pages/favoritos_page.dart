@@ -36,7 +36,10 @@ class _FavoritosPageState extends State<FavoritosPage>
 			stream: _bloc.stream,
 			builder: (context,snapshot){
 				if(snapshot.hasError){
-					return Text("Não foi possível recuperar lista de carros");
+					return RefreshIndicator(
+						onRefresh: _refresh,
+						child: Text("Não foi possível recuperar lista de carros"),
+					);
 				}if(!snapshot.hasData){
 					return Center(
 						child: CircularProgressIndicator(),
@@ -68,13 +71,10 @@ class _FavoritosPageState extends State<FavoritosPage>
 								crossAxisAlignment: CrossAxisAlignment.start,
 								children: <Widget>[
 									Center(
-										child: Hero(
-											tag: carro.nome,
-											child: CachedNetworkImage(
-												imageUrl: carro.urlFoto,
-												placeholder: (context, url) => CircularProgressIndicator(),
-												width: 250,
-											),
+										child: CachedNetworkImage(
+											imageUrl: carro.urlFoto,
+											placeholder: (context, url) => CircularProgressIndicator(),
+											width: 250,
 										),
 									),
 									Text(

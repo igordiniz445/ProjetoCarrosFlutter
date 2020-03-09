@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:html';
 
 import 'package:carros/Entity/Entity.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,7 +10,7 @@ abstract class BaseDao<T extends Entity> {
 
   Future<Database> get db => DatabaseHelper.getInstance().db;
   String get tableName;
-  T fromJson(Map<String, dynamic> map);
+  T fromMap(Map<String,dynamic> map);
 
   Future<int> save(T entity) async {
     var dbClient = await db;
@@ -26,26 +24,16 @@ abstract class BaseDao<T extends Entity> {
     final dbClient = await db;
 
     final list = await dbClient.rawQuery(sql,arguments);
-
-    return list.map<T>((json) => fromJson(json)).toList();
+    return list.map<T>((json) => fromMap(json)).toList();
   }
 
-  Future<List<T>> findAll() async {
-    return await query('select * from $tableName');
+  Future<List<T>> findAll() {
+    return query('select * from $tableName');
   }
-
-
 
   Future<T> findById(int id) async {
-    var dbClient = await db;
-    final list =
-        await dbClient.rawQuery('select * from $tableName where id = ?', [id]);
-
-    if (list.length > 0) {
-      return fromJson(list.first);
-    }
-
-    return null;
+    List<T> list = await query('select * from $tableName where id = ?', [id]);
+    return list.length > 0 ? list.first : null;
   }
 
   Future<bool> exists(int id) async {
@@ -62,6 +50,7 @@ abstract class BaseDao<T extends Entity> {
 
   Future<int> delete(int id) async {
     var dbClient = await db;
+    print("delete from $tableName where id = $id");
     return await dbClient.rawDelete('delete from $tableName where id = ?', [id]);
   }
 

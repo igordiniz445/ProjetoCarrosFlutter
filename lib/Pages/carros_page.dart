@@ -15,10 +15,18 @@ class CarroPage extends StatefulWidget {
 class _CarroPageState extends State<CarroPage> {
   final _loripsumBlock = LoripsunBlock();
 
+  var color = Colors.grey;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    FavoritoService.isFavorito(widget.carro).then((bool fav) {
+      setState(() {
+        color = fav ? Colors.red : Colors.grey;
+      });
+    });
     _loripsumBlock.fetch();
   }
 
@@ -88,7 +96,7 @@ class _CarroPageState extends State<CarroPage> {
             style: TextStyle(fontSize: 22),
           )),
           SizedBox(height: 20),
-          Hero(tag: widget.carro.nome,child: Image.network(widget.carro.urlFoto)),
+          Hero(tag: widget.carro.id,child: Image.network(widget.carro.urlFoto)),
           SizedBox(height: 20),
           _optionRow(),
           Divider(),
@@ -149,7 +157,7 @@ class _CarroPageState extends State<CarroPage> {
             IconButton(
               icon: Icon(
                 Icons.favorite,
-                color: Colors.red,
+                color: color,
                 size: 32,
               ),
               onPressed: _likeCar,
@@ -169,7 +177,10 @@ class _CarroPageState extends State<CarroPage> {
   }
 
   void _likeCar() async{
-    FavoritoService.favoritar(widget.carro);
+    bool isLiked = await FavoritoService.favoritar(widget.carro);
+    setState(() {
+      color = isLiked ? Colors.red : Colors.grey;
+    });
   }
 
   _shareCar() {}

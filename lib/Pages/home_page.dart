@@ -3,6 +3,7 @@ import 'package:carros/Entity/Carro.dart';
 import 'package:carros/Pages/carros_listview.dart';
 import 'package:carros/Preferences/prefs.dart';
 import 'package:carros/Utils/drawer_list.dart';
+import 'package:carros/widgets/AlertDialog.dart';
 import 'package:flutter/material.dart';
 
 import 'favoritos_page.dart';
@@ -54,8 +55,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ],
       ),
       drawer: Drawer_list(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addCarro,
+        child: Icon(Icons.add),
+      ),
     );
   }
 
 
+
+  void _addCarro() {
+    showAlert(context, "Fuck The Sistem", "This is my rola branca");
+  }
 }

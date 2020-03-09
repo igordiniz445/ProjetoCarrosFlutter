@@ -69,7 +69,7 @@ class _CarrosListViewState extends State<CarrosListView>
                   children: <Widget>[
                     Center(
                       child: Hero(
-                        tag: carro.nome,
+                        tag: carro.id,
                         child: CachedNetworkImage(
                           imageUrl: carro.urlFoto,
                           placeholder: (context, url) => CircularProgressIndicator(),
