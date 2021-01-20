@@ -13,8 +13,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
-
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -22,14 +22,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    _tabController.addListener((){
+    _tabController.addListener(() {
       Prefs.setInt("tabIndex", _tabController.index);
     });
     _getLastTab();
   }
-  void _getLastTab()async {
+
+  void _getLastTab() async {
     _tabController.index = await Prefs.getInt("tabIndex");
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,10 +40,22 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         bottom: TabBar(
           controller: _tabController,
           tabs: <Widget>[
-            Tab(text: "Clássicos", icon: Icon(Icons.directions_car),),
-            Tab(text: "Esportivos",icon: Icon(Icons.directions_car),),
-            Tab(text: "Luxo",icon: Icon(Icons.directions_car),),
-            Tab(text: "Favoritos",icon: Icon(Icons.favorite),),
+            Tab(
+              text: "Clássicos",
+              icon: Icon(Icons.directions_car),
+            ),
+            Tab(
+              text: "Esportivos",
+              icon: Icon(Icons.directions_car),
+            ),
+            Tab(
+              text: "Luxo",
+              icon: Icon(Icons.directions_car),
+            ),
+            Tab(
+              text: "Favoritos",
+              icon: Icon(Icons.favorite),
+            ),
           ],
         ),
       ),
@@ -62,9 +76,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-
-
   void _addCarro() {
-    showAlert(context, "Fuck The Sistem", "This is my rola branca");
+    showAlert(context, "Não implementado",
+        "Ainda não é possivel adicionar novos veículos.");
   }
 }

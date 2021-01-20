@@ -96,7 +96,8 @@ class _CarroPageState extends State<CarroPage> {
             style: TextStyle(fontSize: 22),
           )),
           SizedBox(height: 20),
-          Hero(tag: widget.carro.id,child: Image.network(widget.carro.urlFoto)),
+          Hero(
+              tag: widget.carro.id, child: Image.network(widget.carro.urlFoto)),
           SizedBox(height: 20),
           _optionRow(),
           Divider(),
@@ -176,8 +177,8 @@ class _CarroPageState extends State<CarroPage> {
     );
   }
 
-  void _likeCar() async{
-    bool isLiked = await FavoritoService.favoritar(widget.carro);
+  void _likeCar() async {
+    bool isLiked = await FavoritoService.favoritar(context, widget.carro);
     setState(() {
       color = isLiked ? Colors.red : Colors.grey;
     });

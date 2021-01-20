@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:carros/Apis/carros_api.dart';
 import 'package:carros/Blocs/carro_bloc.dart';
 import 'package:carros/Entity/Carro.dart';
 import 'package:carros/Pages/carros_page.dart';
+import 'package:carros/Utils/Bus_evento.dart';
 import 'package:carros/Utils/Navegation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 
 class CarrosListView extends StatefulWidget {
   String tipoCarro;
@@ -17,15 +20,21 @@ class CarrosListView extends StatefulWidget {
 
 class _CarrosListViewState extends State<CarrosListView>
     with AutomaticKeepAliveClientMixin {
-
   List<Carro> carros;
   CarroBloc _bloc = CarroBloc();
+
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _bloc.fetch(this.widget.tipoCarro);
+
+    final bus = Provider.of<Buss_evento>(context, listen: false);
+    subscription = bus.stream.listen((String event) {
+      print(event);
+    });
   }
 
   @override
@@ -34,10 +43,11 @@ class _CarrosListViewState extends State<CarrosListView>
 
     return StreamBuilder(
       stream: _bloc.stream,
-      builder: (context,snapshot){
-        if(snapshot.hasError){
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
           return Text("Não foi possível recuperar lista de carros");
-        }if(!snapshot.hasData){
+        }
+        if (!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -49,9 +59,7 @@ class _CarrosListViewState extends State<CarrosListView>
         );
       },
     );
-
-
-    }
+  }
 
   _listView(carros) {
     return Container(
@@ -71,8 +79,11 @@ class _CarrosListViewState extends State<CarrosListView>
                       child: Hero(
                         tag: carro.id,
                         child: CachedNetworkImage(
-                          imageUrl: carro.urlFoto,
-                          placeholder: (context, url) => CircularProgressIndicator(),
+                          imageUrl: carro.urlFoto != null
+                              ? carro.urlFoto
+                              : "https://exame.com/wp-content/uploads/2020/07/HB20-2020-AUTOM%C3%81TICO-DIVULGA%C3%87%C3%83O.jpg",
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
                           width: 250,
                         ),
                       ),
@@ -107,13 +118,19 @@ class _CarrosListViewState extends State<CarrosListView>
           }),
     );
   }
+
   Future<void> _refresh() {
     return _bloc.fetch(this.widget.tipoCarro);
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    subscription.cancel();
+  }
+
+  @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-
-
 }

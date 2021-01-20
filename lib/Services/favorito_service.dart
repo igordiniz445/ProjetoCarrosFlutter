@@ -3,32 +3,39 @@ import 'package:carros/DataBase/favorito_dao.dart';
 import 'package:carros/Entity/Carro.dart';
 import 'package:carros/Entity/Favorito.dart';
 
-class FavoritoService{
-	static Future<bool>favoritar(Carro c) async {
-		Favorito f = Favorito.fromCarro(c);
-		FavoritoDao dao = new FavoritoDao();
-		final exists = await dao.exists(c.id);
-		print(c.id);
-		print(exists);
-		if(exists){
-			dao.delete(c.id);
-			return false;
-		}else{
-			dao.save(f);
-			return true;
-		}
-	}
+import 'package:provider/provider.dart';
 
-	static Future<List<Carro>> getCarros() async {
-		List<Carro> carros = await CarroDAO().query("select * from carro c,favoritos f where c.id = f.id;");
-		return carros;
-	}
+import '../Blocs/favoritos_block.dart';
 
-	static Future<bool> isFavorito(Carro c) async {
-		final dao = FavoritoDao();
+class FavoritoService {
+  static Future<bool> favoritar(context, Carro c) async {
+    Favorito f = Favorito.fromCarro(c);
+    FavoritoDao dao = new FavoritoDao();
+    final exists = await dao.exists(c.id);
+    print(c.id);
+    print(exists);
+    if (exists) {
+      dao.delete(c.id);
+      Provider.of<FavoritosBloc>(context, listen: false).fetch();
+      return false;
+    } else {
+      dao.save(f);
+      Provider.of<FavoritosBloc>(context, listen: false).fetch();
+      return true;
+    }
+  }
 
-		bool exists = await dao.exists(c.id);
+  static Future<List<Carro>> getCarros() async {
+    List<Carro> carros = await CarroDAO()
+        .query("select * from carro c,favoritos f where c.id = f.id;");
+    return carros;
+  }
 
-		return exists;
-	}
+  static Future<bool> isFavorito(Carro c) async {
+    final dao = FavoritoDao();
+
+    bool exists = await dao.exists(c.id);
+
+    return exists;
+  }
 }
